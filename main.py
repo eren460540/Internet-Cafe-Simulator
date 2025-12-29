@@ -8,13 +8,18 @@ from discord.ext import commands
 TOKEN = os.getenv("DISCORD_TOKEN")
 PREFIX = "!"
 
+# ===== SETTINGS =====
+# Allow disabling the message content intent (required for prefix commands)
+# when it is not enabled in the Discord developer portal.
+MESSAGE_CONTENT_INTENT = os.getenv("DISCORD_MESSAGE_CONTENT_INTENT", "true").lower() == "true"
+
 # ===== COLORS =====
 CYBER_DARK = 0x0b0f1a
 CYBER_CYAN = 0x1ae4ff
 
 # ===== INTENTS =====
 intents = discord.Intents.default()
-intents.message_content = True
+intents.message_content = MESSAGE_CONTENT_INTENT
 
 # ===== BOT INSTANCE =====
 bot = commands.Bot(
@@ -202,4 +207,21 @@ async def on_ready():
 
 
 # ===== RUN BOT =====
-bot.run(TOKEN)
+if not TOKEN:
+    raise RuntimeError(
+        "DISCORD_TOKEN is not set. Please add the bot token to the environment before starting."
+    )
+
+if not MESSAGE_CONTENT_INTENT:
+    print(
+        "[WARN] Message content intent disabled. Prefix commands such as !cafe and !help will not work\n"
+        "Enable the Message Content Intent in your Discord developer portal or set DISCORD_MESSAGE_CONTENT_INTENT=true."
+    )
+
+try:
+    bot.run(TOKEN)
+except discord.errors.PrivilegedIntentsRequired as exc:
+    raise RuntimeError(
+        "Privileged intents are required. Enable the Message Content Intent in the Discord developer portal "
+        "or set DISCORD_MESSAGE_CONTENT_INTENT=false to start without prefix commands."
+    ) from exc
