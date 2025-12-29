@@ -10,8 +10,9 @@ PREFIX = "!"
 
 # ===== SETTINGS =====
 # Allow disabling the message content intent (required for prefix commands)
-# when it is not enabled in the Discord developer portal.
-MESSAGE_CONTENT_INTENT = os.getenv("DISCORD_MESSAGE_CONTENT_INTENT", "true").lower() == "true"
+# when it is not enabled in the Discord developer portal. Default to disabled
+# so the bot can start even if the privilege is not configured.
+MESSAGE_CONTENT_INTENT = os.getenv("DISCORD_MESSAGE_CONTENT_INTENT", "false").lower() == "true"
 
 # ===== COLORS =====
 CYBER_DARK = 0x0b0f1a
@@ -215,7 +216,7 @@ if not TOKEN:
 if not MESSAGE_CONTENT_INTENT:
     print(
         "[WARN] Message content intent disabled. Prefix commands such as !cafe and !help will not work\n"
-        "Enable the Message Content Intent in your Discord developer portal or set DISCORD_MESSAGE_CONTENT_INTENT=true."
+        "Enable the Message Content Intent in your Discord developer portal and set DISCORD_MESSAGE_CONTENT_INTENT=true."
     )
 
 try:
