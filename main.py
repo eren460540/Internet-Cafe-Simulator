@@ -19,7 +19,8 @@ intents.message_content = True
 # ===== BOT INSTANCE =====
 bot = commands.Bot(
     command_prefix=PREFIX,
-    intents=intents
+    intents=intents,
+    help_command=None
 )
 
 # ===== UI COMPONENTS =====
